@@ -2,12 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/alexjialene/go-my-generate/generate"
-	)
 
-func main()  {
+	"github.com/alexjialene/go-my-generate/generate"
+)
+
+func main() {
 	fmt.Println("hello ")
 	//generate.Hello()
-	generate.WriterToFile()
-
+	//generate.WriterToFile()
+	//generate.ConnectMySql()
+	//column := generate.GetColumn("t_label", "records")
+	//fmt.Println(column)
+	generate.GenTemplate()
+	//generate.ConnectMySql()
 }
