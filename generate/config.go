@@ -28,4 +28,29 @@ var ConfigYml = struct {
 		User     string
 		Password string
 	}
+	Templates []struct {
+		Template string
+	}
 }{}
+
+//Final assembly block
+type Assembly struct {
+	entityName          string
+	lowercaseEntityName string
+	tableName           string
+	packageName         string
+	fields              []Field
+	columns             []Columns
+}
+
+type Field struct {
+	name     string
+	typeName string
+	comment  string
+}
+
+type Columns struct {
+	name     string
+	typeName string
+	comment  string
+}

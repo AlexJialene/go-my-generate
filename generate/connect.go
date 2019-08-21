@@ -24,7 +24,7 @@ func ConnectMySql() {
 	db, err := gorm.Open("mysql", dsn)
 	//defer db.Close()
 	if err != nil {
-		fmt.Println("[ERROR] | connect mysql error:%v", err)
+		fmt.Println("[ERROR] | connect mysql error: ", err)
 		return
 	}
 	db.DB().SetConnMaxLifetime(100 * time.Second) //最大连接周期，超过时间的连接就close
@@ -40,7 +40,7 @@ func ConnectMySql() {
 }
 
 func GetColumn(tableName, schema string) []Column {
-	fmt.Println("[INFO] | get columns in table name : %s", tableName)
+	fmt.Println("[INFO] | get columns in table name :", tableName)
 	var column []Column
 	mysqlDB.Table("information_schema.columns").Select("column_name,column_comment,data_type").Where("table_name=? and table_schema=?", tableName, schema).Find(&column)
 	return column

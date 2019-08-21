@@ -2,32 +2,67 @@ package generate
 
 import (
 	"fmt"
+	"html/template"
+	"os"
+
 	//"gopkg.in/yaml.v2"
 	"github.com/jinzhu/configor"
 )
 
-//var t *template.Template
+const OUTPUT = "./output/"
+const TEMPLATE = "./template/"
+
+var t *template.Template
 
 func GenTemplate() {
+	initOutput()
 	//generate config.yml
 	configor.Load(&ConfigYml, "config.yml")
-	//connect mysql
-	fmt.Println(ConfigYml)
-	ConnectMySql()
+	fmt.Println("[INFO] | Scan the config.yml file successfully ")
+	fmt.Println("[INFO] | config.yml : ", ConfigYml)
+	//fmt.Printf("[INFO] | config: %#v", ConfigYml)
 
-	//generate code
-	//mysqlDB, _ := ConnectMySql()
+	//connect mysql
+	ConnectMySql()
+	//
+	column := GetColumn(ConfigYml.Db.Table, ConfigYml.Db.Database)
+	fmt.Println("[INFO] | columns : ", column)
+
+	//Assembly parameter
+	assembly(column)
+	writerToFile()
 
 }
 
-func WriterToFile() {
-	// var demo = &Demo{"Alex", "22"}
-	// t, _ = template.ParseFiles("index.temp")
-	// file, _ := os.OpenFile("demo.java", os.O_CREATE|os.O_WRONLY, 0755)
+func assembly(columns []Column) {
+	a := Assembly{}
+	a.entityName = ConfigYml.Entity
+	a.lowercaseEntityName = ""
+	a.tableName = ConfigYml.Db.Table
+}
 
-	// t.Execute(file, demo)
+func writerToFile() {
+	//TODO
+	table := TableColumn{Table: "this is table name"}
+	t, _ = template.ParseFiles("controller.t")
+	file, _ := os.OpenFile("./output/demo.java", os.O_CREATE|os.O_WRONLY, 0755)
 
+	t.Execute(file, table)
+
+}
+
+func initOutput() {
+	//if the dir not exist then mkdir it
+	_, e := os.Stat(OUTPUT)
+	if os.IsNotExist(e) {
+		os.Mkdir(OUTPUT, os.ModePerm)
+	}
+	_, err := os.Stat(TEMPLATE)
+	if os.IsNotExist(err) {
+		os.Mkdir(TEMPLATE, os.ModePerm)
+	}
 }
 
 type TableColumn struct {
+	Table string
 }
