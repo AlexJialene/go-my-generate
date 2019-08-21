@@ -50,8 +50,11 @@ func assembly(c []Column) Assembly {
 		columns[i].name = c[i].ColumnName
 		columns[i].typeName = c[i].DataType
 		columns[i].comment = c[i].ColumnComment
-		// assembly field
 
+		// assembly field
+		fields[i].name = hump(c[i].ColumnName)
+		fields[i].comment = c[i].ColumnComment
+		fields[i].typeName = dataType(c[i].DataType)
 	}
 	a.fields = fields
 	a.columns = columns
@@ -93,12 +96,42 @@ func firstLowerCase(str string) string {
 func hump(str string) string {
 	split := strings.Split(str, "_")
 	i := len(split)
-	if 1 > i {
+	var returnStr string
+	for num := 0; num < i; num++ {
+		if 0 == num {
+			//returnStr+=firstLowerCase(split[num])
+			returnStr += split[num]
+			continue
+		} else {
+			returnStr += firstCapital(split[num])
+		}
+	}
+	return returnStr
 
-	} else {
+}
+
+func firstCapital(str string) string {
+	s := str[0:1]
+	runes := []rune(s)
+	runes[0] -= 32
+	return string(runes[0]) + str[1:]
+}
+
+func dataType(columeType string) string {
+	switch columeType {
+	case "varchar":
+		return "String"
+	case "bigint":
+		return "Long"
+	case "int":
+		return "Integer"
+	case "tinyint":
+		return "Integer"
 
 	}
 
+	fmt.Println("[ERROR] | No data type was found：", columeType)
+	return ""
 }
 
 type TableColumn struct {
