@@ -18,9 +18,9 @@ var Config1 = struct {
 }{}
 
 var ConfigYml = struct {
-	Entity string
-	Main   string
-	Db     struct {
+	Entity  string
+	Package string
+	Db      struct {
 		Table    string
 		Database string
 		Host     string

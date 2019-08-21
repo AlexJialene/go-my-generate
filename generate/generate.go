@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"strings"
 
 	//"gopkg.in/yaml.v2"
 	"github.com/jinzhu/configor"
@@ -29,16 +30,34 @@ func GenTemplate() {
 	fmt.Println("[INFO] | columns : ", column)
 
 	//Assembly parameter
-	assembly(column)
-	writerToFile()
+	fmt.Println(assembly(column))
+
+	//writerToFile()
 
 }
 
-func assembly(columns []Column) {
+func assembly(c []Column) Assembly {
+	num := len(c)
 	a := Assembly{}
 	a.entityName = ConfigYml.Entity
-	a.lowercaseEntityName = ""
+	a.lowercaseEntityName = firstLowerCase(ConfigYml.Entity)
 	a.tableName = ConfigYml.Db.Table
+	a.packageName = ConfigYml.Package
+
+	fields := make([]Field, num)
+	columns := make([]Columns, num)
+	for i := 0; i < len(c); i++ {
+		columns[i].name = c[i].ColumnName
+		columns[i].typeName = c[i].DataType
+		columns[i].comment = c[i].ColumnComment
+		// assembly field
+
+	}
+	a.fields = fields
+	a.columns = columns
+
+	return a
+
 }
 
 func writerToFile() {
@@ -61,6 +80,25 @@ func initOutput() {
 	if os.IsNotExist(err) {
 		os.Mkdir(TEMPLATE, os.ModePerm)
 	}
+}
+
+func firstLowerCase(str string) string {
+	s := str[0:1]
+	runes := []rune(s)
+	runes[0] += 32
+	return string(runes[0]) + str[1:]
+
+}
+
+func hump(str string) string {
+	split := strings.Split(str, "_")
+	i := len(split)
+	if 1 > i {
+
+	} else {
+
+	}
+
 }
 
 type TableColumn struct {

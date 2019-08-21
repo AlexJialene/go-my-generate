@@ -1,13 +1,13 @@
 entity: thisisentity
-main: com.keizyi
+package: com.keizyi
 db:
- table: t_label
- database: records
- host: 47.98.45.180
- port: 3306
- user: root
- password: 950426
+  table: t_label
+  database: records
+  host: 47.98.45.180
+  port: 3306
+  user: root
+  password: 950426
 
 templates:
-- template: controller.t
-- template: service.t
+  - template: controller.t
+  - template: service.t
