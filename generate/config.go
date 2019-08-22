@@ -18,6 +18,7 @@ var Config1 = struct {
 }{}
 
 var ConfigYml = struct {
+	Author  string
 	Entity  string
 	Package string
 	Db      struct {
@@ -35,22 +36,24 @@ var ConfigYml = struct {
 
 //Final assembly block
 type Assembly struct {
-	entityName          string
-	lowercaseEntityName string
-	tableName           string
-	packageName         string
-	fields              []Field
-	columns             []Columns
+	Date                string
+	Author              string
+	EntityName          string
+	LowercaseEntityName string
+	TableName           string
+	PackageName         string
+	Fields              []Field
+	Columns             []Columns
 }
 
 type Field struct {
-	name     string
-	typeName string
-	comment  string
+	Name     string
+	TypeName string
+	Comment  string
 }
 
 type Columns struct {
-	name     string
-	typeName string
-	comment  string
+	Name     string
+	TypeName string
+	Comment  string
 }

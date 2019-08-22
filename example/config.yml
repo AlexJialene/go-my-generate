@@ -1,12 +1,13 @@
-entity: thisisentity
+author: lamkeizyi
+entity: Label
 package: com.keizyi
 db:
   table: t_label
   database: records
-  host: 47.98.45.180
+  host: localhost
   port: 3306
   user: root
-  password: 950426
+  password: 123456
 
 templates:
   - template: controller.t

@@ -2,9 +2,10 @@ package generate
 
 import (
 	"fmt"
-	"html/template"
 	"os"
 	"strings"
+	"text/template"
+	"time"
 
 	//"gopkg.in/yaml.v2"
 	"github.com/jinzhu/configor"
@@ -12,6 +13,7 @@ import (
 
 const OUTPUT = "./output/"
 const TEMPLATE = "./template/"
+const SUFFIX = ".java"
 
 var t *template.Template
 
@@ -27,50 +29,55 @@ func GenTemplate() {
 	ConnectMySql()
 	//
 	column := GetColumn(ConfigYml.Db.Table, ConfigYml.Db.Database)
-	fmt.Println("[INFO] | columns : ", column)
+	fmt.Println("[INFO] | Columns : ", column)
 
 	//Assembly parameter
-	fmt.Println(assembly(column))
+	a := assembly(column)
+	fmt.Println("[INFO] | Assembly entity")
 
-	//writerToFile()
-
+	writerTemplates(a)
+	fmt.Println("[INFO] | Generation Success")
 }
 
 func assembly(c []Column) Assembly {
 	num := len(c)
 	a := Assembly{}
-	a.entityName = ConfigYml.Entity
-	a.lowercaseEntityName = firstLowerCase(ConfigYml.Entity)
-	a.tableName = ConfigYml.Db.Table
-	a.packageName = ConfigYml.Package
+	//a.Date = time.Now().Format("2006-01-02 15:04:05")
+	a.Date = time.Now().Format("2006-01-02")
+	a.Author = ConfigYml.Author
+	a.EntityName = ConfigYml.Entity
+	a.LowercaseEntityName = FirstLowerCase(ConfigYml.Entity)
+	a.TableName = ConfigYml.Db.Table
+	a.PackageName = ConfigYml.Package
 
 	fields := make([]Field, num)
 	columns := make([]Columns, num)
 	for i := 0; i < len(c); i++ {
-		columns[i].name = c[i].ColumnName
-		columns[i].typeName = c[i].DataType
-		columns[i].comment = c[i].ColumnComment
+		columns[i].Name = c[i].ColumnName
+		columns[i].TypeName = c[i].DataType
+		columns[i].Comment = c[i].ColumnComment
 
 		// assembly field
-		fields[i].name = hump(c[i].ColumnName)
-		fields[i].comment = c[i].ColumnComment
-		fields[i].typeName = dataType(c[i].DataType)
+		fields[i].Name = Hump(c[i].ColumnName)
+		fields[i].Comment = c[i].ColumnComment
+		fields[i].TypeName = DataType(c[i].DataType)
 	}
-	a.fields = fields
-	a.columns = columns
-
+	a.Fields = fields
+	a.Columns = columns
 	return a
 
 }
 
-func writerToFile() {
-	//TODO
-	table := TableColumn{Table: "this is table name"}
-	t, _ = template.ParseFiles("controller.t")
-	file, _ := os.OpenFile("./output/demo.java", os.O_CREATE|os.O_WRONLY, 0755)
-
-	t.Execute(file, table)
-
+func writerTemplates(assembly Assembly) {
+	//write to new file to templates
+	templates := ConfigYml.Templates
+	for _, v := range templates {
+		t, _ = template.ParseFiles(TEMPLATE + v.Template)
+		fileNameNoSuffix := GetFileNameNoSuffix(v.Template)
+		simpleFileName := ConfigYml.Entity + FirstCapital(Hump(fileNameNoSuffix))
+		file, _ := os.OpenFile(OUTPUT+simpleFileName+SUFFIX, os.O_CREATE|os.O_WRONLY, 0755)
+		t.Execute(file, assembly)
+	}
 }
 
 func initOutput() {
@@ -85,7 +92,7 @@ func initOutput() {
 	}
 }
 
-func firstLowerCase(str string) string {
+func FirstLowerCase(str string) string {
 	s := str[0:1]
 	runes := []rune(s)
 	runes[0] += 32
@@ -93,7 +100,7 @@ func firstLowerCase(str string) string {
 
 }
 
-func hump(str string) string {
+func Hump(str string) string {
 	split := strings.Split(str, "_")
 	i := len(split)
 	var returnStr string
@@ -103,23 +110,29 @@ func hump(str string) string {
 			returnStr += split[num]
 			continue
 		} else {
-			returnStr += firstCapital(split[num])
+			returnStr += FirstCapital(split[num])
 		}
 	}
 	return returnStr
 
 }
 
-func firstCapital(str string) string {
+func FirstCapital(str string) string {
 	s := str[0:1]
 	runes := []rune(s)
 	runes[0] -= 32
 	return string(runes[0]) + str[1:]
 }
 
-func dataType(columeType string) string {
+func DataType(columeType string) string {
 	switch columeType {
 	case "varchar":
+		return "String"
+	case "char":
+		return "String"
+	case "text":
+		return "String"
+	case "longtext":
 		return "String"
 	case "bigint":
 		return "Long"
@@ -127,11 +140,25 @@ func dataType(columeType string) string {
 		return "Integer"
 	case "tinyint":
 		return "Integer"
-
+	case "date":
+		return "LocalDate"
+	case "datetime":
+		return "LocalDateTime"
+	case "timestamp":
+		return "LocalDateTime"
+	case "double":
+		return "Double"
+	case "decimal":
+		return "BigDecimal"
 	}
 
 	fmt.Println("[ERROR] | No data type was found：", columeType)
 	return ""
+}
+
+func GetFileNameNoSuffix(s string) string {
+	index := strings.LastIndex(s, ".")
+	return s[0:index]
 }
 
 type TableColumn struct {
