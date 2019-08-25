@@ -11,3 +11,7 @@ type Column struct {
 	ColumnComment string
 	DataType      string
 }
+
+type Tables struct {
+	TableName string
+}

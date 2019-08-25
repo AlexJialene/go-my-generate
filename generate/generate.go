@@ -17,18 +17,21 @@ const SUFFIX = ".java"
 
 var t *template.Template
 
-func GenTemplate() {
+func InitConfig() {
 	initOutput()
 	//generate config.yml
 	configor.Load(&ConfigYml, "config.yml")
 	fmt.Println("[INFO] | Scan the config.yml file successfully ")
 	fmt.Println("[INFO] | config.yml : ", ConfigYml)
-	//fmt.Printf("[INFO] | config: %#v", ConfigYml)
+}
 
+func GenTemplate() {
+	InitConfig()
 	//connect mysql
 	ConnectMySql()
-	//
-	column := GetColumn(ConfigYml.Db.Table, ConfigYml.Db.Database)
+
+	//TODO Determine if the table name is empty then generate all
+	column := GetColumn()
 	fmt.Println("[INFO] | Columns : ", column)
 
 	//Assembly parameter
@@ -74,9 +77,16 @@ func writerTemplates(assembly Assembly) {
 	for _, v := range templates {
 		t, _ = template.ParseFiles(TEMPLATE + v.Template)
 		fileNameNoSuffix := GetFileNameNoSuffix(v.Template)
-		simpleFileName := ConfigYml.Entity + FirstCapital(Hump(fileNameNoSuffix))
-		file, _ := os.OpenFile(OUTPUT+simpleFileName+SUFFIX, os.O_CREATE|os.O_WRONLY, 0755)
+		var simpleFileName string
+		if "domain" == fileNameNoSuffix || "entity" == fileNameNoSuffix || "model" == fileNameNoSuffix {
+			simpleFileName = ConfigYml.Entity
+		} else {
+			simpleFileName = ConfigYml.Entity + FirstCapital(Hump(fileNameNoSuffix))
+		}
+		fileName := OUTPUT + simpleFileName + SUFFIX
+		file, _ := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY, 0755)
 		t.Execute(file, assembly)
+		fmt.Println("[INFO] | Generate file : ", fileName)
 	}
 }
 
@@ -159,8 +169,4 @@ func DataType(columeType string) string {
 func GetFileNameNoSuffix(s string) string {
 	index := strings.LastIndex(s, ".")
 	return s[0:index]
-}
-
-type TableColumn struct {
-	Table string
 }

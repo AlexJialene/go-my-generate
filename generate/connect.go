@@ -39,10 +39,19 @@ func ConnectMySql() {
 
 }
 
-func GetColumn(tableName, schema string) []Column {
+func GetColumn() []Column {
+	tableName := ConfigYml.Db.Table
+	schema := ConfigYml.Db.Database
 	fmt.Println("[INFO] | get columns in table name :", tableName)
 	var column []Column
 	mysqlDB.Table("information_schema.columns").Select("column_name,column_comment,data_type").Where("table_name=? and table_schema=?", tableName, schema).Find(&column)
 	return column
 
+}
+
+func GetTables() []Tables {
+	fmt.Println("[INFO] | get columns in table name :", ConfigYml.Db.Database)
+	var tables []Tables
+	mysqlDB.Table("information_schema.tables").Select("table_name").Where("table_schema=?", ConfigYml.Db.Database).Find(&tables)
+	return tables
 }

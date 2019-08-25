@@ -12,3 +12,6 @@ db:
 templates:
   - template: controller.t
   - template: service.t
+  - template: domain.t
+  - template: service_impl.t
+  - template: mapper.t
