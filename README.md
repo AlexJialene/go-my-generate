@@ -8,7 +8,7 @@ A tool to help me generate java code
  go get github.com/alexjialene/go-my-generate/generate
 ```
 
->> Create the following in the run directory
+> Create the following in the run directory
 
 * config.yml
 
