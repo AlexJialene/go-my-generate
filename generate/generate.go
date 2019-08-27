@@ -64,6 +64,7 @@ func assembly(c []Column) Assembly {
 		fields[i].Name = Hump(c[i].ColumnName)
 		fields[i].Comment = c[i].ColumnComment
 		fields[i].TypeName = DataType(c[i].DataType)
+		fields[i].ColumnName = c[i].ColumnName
 	}
 	a.Fields = fields
 	a.Columns = columns

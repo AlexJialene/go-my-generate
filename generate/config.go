@@ -47,9 +47,10 @@ type Assembly struct {
 }
 
 type Field struct {
-	Name     string
-	TypeName string
-	Comment  string
+	Name       string
+	TypeName   string
+	Comment    string
+	ColumnName string
 }
 
 type Columns struct {
