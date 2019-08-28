@@ -23,7 +23,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="panel panel-default bk-bg-white">
                 <div class="panel-body">
-                    <form role="form" class="form-inline" action="${pageContext.request.contextPath }/pv/{{.LowercaseEntityName}}/list" method="get">
+                    <form id="sForm" role="form" class="form-inline" action="${pageContext.request.contextPath }/pv/{{.LowercaseEntityName}}/list" method="get">
 
 
                         <%-- <ul class="form-group">
@@ -58,7 +58,7 @@
                                 {{end}}
                                 <td>
                                     <a class="btn btn-primary" href="/pv/{{.LowercaseEntityName}}/view/${}">编辑</a>
-                                    <button class="btn btn-primary" onclick="confirmDel('${}')">删除</button>
+                                    <button class="btn btn-primary" onclick="confirmDel('{{.LowercaseEntityName}}','${}')">删除</button>
                                 </td>
 
                             </tr>
@@ -94,20 +94,10 @@
 <script src="${pageContext.request.contextPath}/hplus/js/jquery-2.1.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/hplus/js/bootstrap.min.js?v=3.4.0"></script>
 <script src="${pageContext.request.contextPath}/hplus/js/plugins/layer/layer.min.js"></script>
+<script src="${pageContext.request.contextPath}/view/js/common.js"></script>
 <!-- Pages JS -->
 <!-- end: JavaScript-->
 <script type="text/javascript">
-    function confirmDel(id){
-        layer.confirm('确认删除？', {
-            btn: ['确认','取消'] //按钮
-        }, function(){
-            location.href="${pageContext.request.contextPath}/pv/{{.LowercaseEntityName}}/delete/"+id
-            layer.msg('删除成功', {icon: 1});
-        }, function(){
-
-        });
-    }
-
 </script>
 </body>
 </html>

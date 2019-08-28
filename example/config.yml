@@ -15,3 +15,5 @@ templates:
   - template: domain.t
   - template: service_impl.t
   - template: mapper.t
+  - template: list_html.t
+  - template: mapper_xml.t

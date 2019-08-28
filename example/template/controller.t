@@ -68,9 +68,10 @@ public class {{.EntityName}}Controller {
     }
 
     @GetMapping("/pv/{{.LowercaseEntityName}}/delete/{id}")
-    public String add{{.EntityName}}(@PathVariable("id") Long id) {
+    @ResponseBody
+    public BizResponse<Boolean> del{{.EntityName}}(@PathVariable("id") Long id) {
         this.{{.LowercaseEntityName}}Service.removeById(id);
-        return "redirect:/pv/{{.LowercaseEntityName}}/list";
+        return new BizResponse<>(true);
     }
 
     @GetMapping("/pb/{{.LowercaseEntityName}}/list/ajax")
