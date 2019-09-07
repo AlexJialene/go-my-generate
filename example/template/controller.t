@@ -1,26 +1,22 @@
-package {{.PackageName}}.controller.right;
+package {{.PackageName}}.controller.{{.LowercaseEntityName}};
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-
-import {{.PackageName}}.domain.{{.EntityName}};
-import {{.PackageName}}.service.{{.EntityName}}Service;
-import {{.PackageName}}.vo.IdAndNameVo;
-
-import org.apache.commons.lang3.StringUtils;
+import {{.PackageName}}.common.exception.BizException;
+import {{.PackageName}}.common.exception.BizResponse;
+import {{.PackageName}}.domain.{{.LowercaseEntityName}}.{{.EntityName}};
+import {{.PackageName}}.service.{{.LowercaseEntityName}}.{{.EntityName}}Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
- * @author {{.Author}}
- * @date {{.Date}}
+ * @author linjiayu
+ * @date 2019-07-20
  */
 @Controller
 public class {{.EntityName}}Controller {
@@ -29,18 +25,17 @@ public class {{.EntityName}}Controller {
     private {{.EntityName}}Service {{.LowercaseEntityName}}Service;
 
     @GetMapping("/pv/{{.LowercaseEntityName}}/list")
-    public String list(Model model,
-                       {{.EntityName}} {{.LowercaseEntityName}},
-                       @RequestParam(required = false, defaultValue = "1") int pageNum,
-                       @RequestParam(required = false, defaultValue = "10") int pageSize) {
-        QueryWrapper<{{.EntityName}}> queryWrapper = new QueryWrapper<>();
-
+    public String index(Model model,
+                        {{.EntityName}} {{.LowercaseEntityName}},
+                        @RequestParam(required = false, defaultValue = "1") int pageNum,
+                        @RequestParam(required = false, defaultValue = "10") int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<{{.EntityName}}> {{.LowercaseEntityName}}s = this.{{.LowercaseEntityName}}Service.list(queryWrapper);
+        List<{{.EntityName}}> {{.LowercaseEntityName}}s = this.{{.LowercaseEntityName}}Service.list{{.EntityName}}({{.LowercaseEntityName}});
 
         model.addAttribute("pageInfo", new PageInfo<>({{.LowercaseEntityName}}s));
         model.addAttribute("{{.LowercaseEntityName}}", {{.LowercaseEntityName}});
         model.addAttribute("pageSize", pageSize);
+        model.addAttribute("pageNum", pageNum);
         return "{{.LowercaseEntityName}}/{{.LowercaseEntityName}}";
     }
 
@@ -58,27 +53,26 @@ public class {{.EntityName}}Controller {
     }
 
     @PostMapping("/pv/{{.LowercaseEntityName}}/save")
-    public String save({{.EntityName}} {{.LowercaseEntityName}}) {
-        if (Objects.isNull({{.LowercaseEntityName}}.getId())) {
-            {{.LowercaseEntityName}}.setPriority(IdWorker.getId());
-        }
-
-        this.{{.LowercaseEntityName}}Service.saveOrUpdate({{.LowercaseEntityName}});
-        return "redirect:/pv/{{.LowercaseEntityName}}/list";
-    }
-
-    @GetMapping("/pv/{{.LowercaseEntityName}}/delete/{id}")
     @ResponseBody
-    public BizResponse<Boolean> del{{.EntityName}}(@PathVariable("id") Long id) {
-        this.{{.LowercaseEntityName}}Service.removeById(id);
+    public BizResponse<Boolean> save({{.EntityName}} {{.LowercaseEntityName}}) throws BizException {
+        this.{{.LowercaseEntityName}}Service.saveOrUpdate{{.EntityName}}({{.LowercaseEntityName}});
         return new BizResponse<>(true);
     }
 
-    @GetMapping("/pb/{{.LowercaseEntityName}}/list/ajax")
-    @ResponseBody
-    public Object listAjax(@RequestParam(required = false, defaultValue = "1") int pageNum,
-                           @RequestParam(required = false, defaultValue = "100") int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        return this.{{.LowercaseEntityName}}Service.selectAjax(null , IdAndNameVo.class);
+    @GetMapping("/pv/{{.LowercaseEntityName}}/delete/{id}")
+    public String del{{.EntityName}}(@PathVariable("id") Long id) {
+        this.{{.LowercaseEntityName}}Service.removeById(id);
+        return "redirect:/pv/{{.LowercaseEntityName}}/list";
     }
+
+    @PostMapping("/pv/{{.LowercaseEntityName}}/disable/{status}")
+    @ResponseBody
+    public BizResponse<Boolean> disable(@PathVariable("status") Integer status , @RequestBody List<String> ids) {
+        UpdateWrapper<{{.EntityName}}> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("status" , status);
+        updateWrapper.in("id" , ids);
+        this.{{.LowercaseEntityName}}Service.update(updateWrapper);
+        return new BizResponse<>(true);
+    }
+
 }

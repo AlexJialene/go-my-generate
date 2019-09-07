@@ -1,4 +1,4 @@
-module generate
+module github.com/alexjialene/go-my-generate/generate
 
 go 1.12
 
