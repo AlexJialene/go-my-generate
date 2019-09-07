@@ -53,10 +53,9 @@ public class {{.EntityName}}Controller {
     }
 
     @PostMapping("/pv/{{.LowercaseEntityName}}/save")
-    @ResponseBody
     public BizResponse<Boolean> save({{.EntityName}} {{.LowercaseEntityName}}) throws BizException {
         this.{{.LowercaseEntityName}}Service.saveOrUpdate{{.EntityName}}({{.LowercaseEntityName}});
-        return new BizResponse<>(true);
+        return "redirect:/pv/{{.LowercaseEntityName}}/list";
     }
 
     @GetMapping("/pv/{{.LowercaseEntityName}}/delete/{id}")
