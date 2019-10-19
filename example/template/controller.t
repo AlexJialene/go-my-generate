@@ -53,15 +53,16 @@ public class {{.EntityName}}Controller {
     }
 
     @PostMapping("/pv/{{.LowercaseEntityName}}/save")
-    public BizResponse<Boolean> save({{.EntityName}} {{.LowercaseEntityName}}) throws BizException {
-        this.{{.LowercaseEntityName}}Service.saveOrUpdate{{.EntityName}}({{.LowercaseEntityName}});
+    public String save({{.EntityName}} {{.LowercaseEntityName}}) throws BizException {
+        this.{{.LowercaseEntityName}}Service.saveOrUpdate({{.LowercaseEntityName}});
         return "redirect:/pv/{{.LowercaseEntityName}}/list";
     }
 
-    @GetMapping("/pv/{{.LowercaseEntityName}}/delete/{id}")
-    public String del{{.EntityName}}(@PathVariable("id") Long id) {
-        this.{{.LowercaseEntityName}}Service.removeById(id);
-        return "redirect:/pv/{{.LowercaseEntityName}}/list";
+    @GetMapping("/pv/{{.LowercaseEntityName}}/delete")
+    @ResponseBody
+    public BizResponse<Void> del{{.EntityName}}(@RequestBody List<Long> ids) {
+        this.{{.LowercaseEntityName}}Service.removeByIds(ids);
+        return new BizResponse<>(BizRetStatus.SUCCESS);
     }
 
     @PostMapping("/pv/{{.LowercaseEntityName}}/disable/{status}")

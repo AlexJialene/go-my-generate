@@ -16,9 +16,8 @@ import java.util.List;
 @Service
 public class {{.EntityName}}ServiceImpl extends BaseServiceImpl<{{.EntityName}}Mapper, {{.EntityName}}> implements {{.EntityName}}Service {
     @Override
-    public List<{{.EntityName}}> selectList() {
+    public List<{{.EntityName}}> list{{.EntityName}}({{.EntityName}} {{.LowercaseEntityName}})() {
         QueryWrapper<{{.EntityName}}> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByAsc("priority");
         return list(queryWrapper);
     }
 }

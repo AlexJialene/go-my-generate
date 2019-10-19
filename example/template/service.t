@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface {{.EntityName}}Service extends BaseService<{{.EntityName}}> {
 
-    List<{{.EntityName}}> selectList();
+    List<{{.EntityName}}> list{{.EntityName}}({{.LowercaseEntityName}})();
 }

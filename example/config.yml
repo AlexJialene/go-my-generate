@@ -1,13 +1,13 @@
 author: lamkeizyi
-entity: Label
-package: com.keizyi
+entity: Nb
+package: com.nb
 db:
-  table: t_label
-  database: records
-  host: localhost
+  table: t_nb
+  database: nb-smork
+  host: 47.98.45.180
   port: 3306
   user: root
-  password: 123456
+  password: 950426
 
 templates:
   - template: controller.t
